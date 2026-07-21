@@ -1,69 +1,836 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EBB Canvas HTML Package Index</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 2 Workbook v1.0 — Pattern and Lived Rule Workbook</title>
+<meta name="description" content="Classroom Version 1.0 portable Chapter 2 workbook for detecting written rules, lived rules, patterns, blockages, and repair routes." />
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; line-height: 1.55; color: #1f2933; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-  h1 { font-size: 2rem; line-height: 1.2; margin-top: 2rem; border-bottom: 2px solid #d9e2ec; padding-bottom: .35rem; }
-  h2 { font-size: 1.45rem; line-height: 1.25; margin-top: 1.6rem; }
-  h3 { font-size: 1.18rem; margin-top: 1.25rem; }
-  p { margin: .7rem 0; }
-  blockquote { border-left: 4px solid #bcccdc; margin: 1rem 0; padding: .5rem 1rem; background: #f8fafc; font-weight: 600; }
-  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
-  th, td { border: 1px solid #cbd2d9; padding: .45rem .55rem; vertical-align: top; }
-  th { background: #f0f4f8; text-align: left; }
-  .canvas-note { font-size: .9rem; color: #52606d; border-top: 1px solid #d9e2ec; margin-top: 2rem; padding-top: .75rem; }
-  nav.toc ul { columns: 2; }
-  @media print { body { max-width: none; margin: 0.5in; } nav.toc { display: none; } }
+  :root {
+    --bg: #f8f6f1;
+    --surface: #ffffff;
+    --surface-soft: #fffaf1;
+    --ink: #1f2933;
+    --muted: #52606d;
+    --line: #d6cec1;
+    --accent: #60513f;
+    --accent-strong: #443629;
+    --accent-soft: #eee5d8;
+    --focus: #0b63ce;
+    --good: #2f6f4e;
+    --warn: #8a4b16;
+    --danger: #9f1d1d;
+    --shadow: 0 18px 44px rgba(50, 42, 32, 0.12);
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+    --max: 980px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 18px;
+    line-height: 1.62;
+  }
+
+  a {
+    color: var(--accent-strong);
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.16em;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  textarea:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  summary:focus-visible {
+    outline-style: solid;
+    outline-color: var(--focus);
+    outline-width: 4px;
+    outline-offset: 4px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 10;
+    background-color: var(--surface);
+    color: var(--ink);
+    padding: 0.75rem 1rem;
+    border-style: solid;
+    border-color: var(--accent);
+    border-width: 2px;
+    border-radius: var(--radius-sm);
+    transform: translateY(-150%);
+  }
+  .skip-link:focus { transform: translateY(0); }
+
+  .site-header {
+    background: linear-gradient(135deg, #fffaf0 0%, #eadfce 52%, #ccb99d 100%);
+    border-bottom-style: solid;
+    border-bottom-color: var(--line);
+    border-bottom-width: 1px;
+  }
+  .wrap {
+    width: min(100% - 2rem, var(--max));
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .hero { padding: 3.5rem 0 2.5rem 0; }
+  .eyebrow {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--accent-strong);
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  h1, h2, h3 { line-height: 1.15; color: #1e252e; }
+  h1 { font-size: clamp(2rem, 5vw, 4rem); margin: 0.75rem 0 0.75rem 0; }
+  h2 { font-size: clamp(1.55rem, 3vw, 2.35rem); margin-top: 0; }
+  h3 { font-size: 1.25rem; margin-bottom: 0.45rem; }
+  .subtitle { font-size: 1.22rem; max-width: 760px; color: var(--muted); margin: 0; }
+  .version-pill {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background-color: var(--accent-strong);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+  .course-sentence {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-left-style: solid;
+    border-left-color: var(--accent-strong);
+    border-left-width: 6px;
+    background-color: rgba(255, 255, 255, 0.66);
+    border-radius: var(--radius-md);
+    font-weight: 800;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 2rem 0 4rem 0;
+  }
+  .sidebar {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    background-color: var(--surface);
+    border-style: solid;
+    border-color: var(--line);
+    border-width: 1px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+  }
+  .sidebar h2 { font-size: 1.05rem; margin: 0 0 0.75rem 0; }
+  .progressbar {
+    height: 14px;
+    border-radius: 999px;
+    background-color: #e7dfd2;
+    overflow: hidden;
+    border-style: solid;
+    border-color: #d3c7b8;
+    border-width: 1px;
+    margin-bottom: 0.5rem;
+  }
+  .progressbar > div { height: 100%; width: 0%; background-color: var(--good); transition-property: width; transition-duration: 180ms; transition-timing-function: ease; }
+  .progress-text { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; }
+  .progress-list { list-style-type: none; padding: 0; margin: 0; display: grid; gap: 0.35rem; }
+  .progress-list a {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-decoration-line: none;
+    color: var(--ink);
+  }
+  .progress-list a:hover { background-color: var(--accent-soft); }
+  .status-dot {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--line);
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+  .done .status-dot { background-color: var(--good); border-color: var(--good); }
+  .sidebar-actions { display: grid; gap: 0.5rem; margin-top: 1rem; }
+
+  main { display: grid; gap: 1.2rem; }
+  section.card {
+    background-color: var(--surface);
+    border-style: solid;
+    border-color: var(--line);
+    border-width: 1px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: clamp(1rem, 2.5vw, 2rem);
+  }
+  .section-kicker {
+    color: var(--accent-strong);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .callout, .privacy, .case-box, .tool-box, .example-box, .output-box, .warn-box {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  .callout { background-color: var(--surface-soft); border-color: #ead9bd; }
+  .privacy { background-color: #f6fbf7; border-color: #b9d8c2; }
+  .case-box { background-color: #fffaf2; border-color: #e2ceb0; }
+  .tool-box { background-color: #f7f5ff; border-color: #cdc5ef; }
+  .example-box { background-color: #f5fbff; border-color: #bad6eb; }
+  .output-box { background-color: #fbfbf8; border-color: #cbc7b9; }
+  .warn-box { background-color: #fff7ed; border-color: #f1c79b; }
+  .grid-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+
+  .field { margin: 1.1rem 0; }
+  label { display: block; font-weight: 800; margin-bottom: 0.35rem; }
+  .hint { color: var(--muted); font-size: 0.95rem; margin: 0.25rem 0 0.45rem 0; }
+  textarea, input[type="text"], select {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background-color: #fff;
+    border-style: solid;
+    border-color: #b9b2a8;
+    border-width: 1px;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+  }
+  textarea { min-height: 112px; resize: vertical; }
+  select { min-height: 48px; }
+  .small-input { max-width: 420px; }
+  .checkbox-row {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    margin: 0.75rem 0;
+  }
+  .checkbox-row input { margin-top: 0.45rem; width: 1.1rem; height: 1.1rem; }
+  .checkbox-row label { font-weight: 650; margin: 0; }
+
+  .button-row { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 1rem; }
+  button {
+    border-style: solid;
+    border-color: var(--accent-strong);
+    border-width: 2px;
+    border-radius: var(--radius-sm);
+    background-color: var(--accent-strong);
+    color: #ffffff;
+    padding: 0.65rem 0.9rem;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  button.secondary { background-color: var(--surface); color: var(--accent-strong); }
+  button.danger { background-color: var(--danger); border-color: var(--danger); color: #fff; }
+  button:hover { filter: brightness(1.03); }
+  .muted { color: var(--muted); }
+  .required-note { font-size: 0.9rem; color: var(--muted); }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 1rem 0; list-style-type: none; }
+  .tag-list li { background-color: var(--accent-soft); border-radius: 999px; padding: 0.25rem 0.65rem; font-size: 0.92rem; font-weight: 700; }
+
+  pre.output-card-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background-color: #fff;
+    border-style: solid;
+    border-color: #c9c2b7;
+    border-width: 1px;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    min-height: 220px;
+  }
+  .completion-message {
+    display: none;
+    background-color: #effaf3;
+    border-style: solid;
+    border-color: #9cccaa;
+    border-width: 1px;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .completion-message.show { display: block; }
+
+  footer {
+    border-top-style: solid;
+    border-top-color: var(--line);
+    border-top-width: 1px;
+    padding: 2rem 0;
+    color: var(--muted);
+  }
+
+  @media (max-width: 850px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .grid-two { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+  <div class="wrap hero">
+    <div class="eyebrow">Ethics and Critical Thinking · Chapter 2 Workbook</div>
+    <h1>Pattern and Lived Rule Workbook</h1>
+    <p class="subtitle">Detect written rules, lived rules, patterns, blockages, and repair routes.</p>
+    <span class="version-pill">Classroom Version 1.0</span>
+    <div class="course-sentence">Chapter move: Detect the pattern. Core question: What pattern is being produced?</div>
+  </div>
+</header>
 
+<div class="wrap layout">
+  <aside class="sidebar" aria-label="Workbook progress">
+    <h2>Your progress</h2>
+    <div class="progressbar" aria-hidden="true"><div id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">0% complete</div>
+    <ol class="progress-list" id="progress-list">
+      <li><a href="#arrive" data-section="arrive"><span class="status-dot" aria-hidden="true"></span><span>1. Arrive</span></a></li>
+      <li><a href="#case" data-section="case"><span class="status-dot" aria-hidden="true"></span><span>2. Read the Case</span></a></li>
+      <li><a href="#rules" data-section="rules"><span class="status-dot" aria-hidden="true"></span><span>3. Written Rule vs Lived Rule</span></a></li>
+      <li><a href="#diagnosis" data-section="diagnosis"><span class="status-dot" aria-hidden="true"></span><span>4. Pattern Diagnosis</span></a></li>
+      <li><a href="#blockage" data-section="blockage"><span class="status-dot" aria-hidden="true"></span><span>5. Suppression / Obstruction</span></a></li>
+      <li><a href="#responsibility" data-section="responsibility"><span class="status-dot" aria-hidden="true"></span><span>6. Responsibility and Limits</span></a></li>
+      <li><a href="#repair" data-section="repair"><span class="status-dot" aria-hidden="true"></span><span>7. Pattern Repair</span></a></li>
+      <li><a href="#output" data-section="output"><span class="status-dot" aria-hidden="true"></span><span>8. Output Card</span></a></li>
+      <li><a href="#complete" data-section="complete"><span class="status-dot" aria-hidden="true"></span><span>9. Complete</span></a></li>
+    </ol>
+    <div class="sidebar-actions">
+      <button type="button" class="secondary" id="download-worksheet">Download worksheet</button>
+      <button type="button" class="secondary" id="save-progress">Save now</button>
+      <button type="button" class="danger" id="reset-workbook">Reset</button>
+    </div>
+  </aside>
 
-<h1>Ethics and Critical Thinking — Canvas HTML Package</h1>
-<p>This package contains Canvas-friendly standalone HTML files and matching body-only fragments for the finalized textbook.</p>
-<h2>Complete book</h2>
-<ul><li><a href="full_book/EBB_complete_textbook_canvas_preview.html">Complete textbook preview HTML</a></li></ul>
-<h2>Individual pages</h2>
-<table><thead><tr><th>Order</th><th>Section</th><th>Approx. words</th></tr></thead><tbody><tr><td>00</td><td><a href="canvas_pages/00_title-page.html">Title Page</a></td><td>46</td></tr>
-<tr><td>01</td><td><a href="canvas_pages/01_table-of-contents.html">Table of Contents</a></td><td>192</td></tr>
-<tr><td>02</td><td><a href="canvas_pages/02_front-matter.html">Front Matter</a></td><td>118</td></tr>
-<tr><td>03</td><td><a href="canvas_pages/03_preface.html">Preface</a></td><td>997</td></tr>
-<tr><td>04</td><td><a href="canvas_pages/04_how-to-use-this-book.html">How to Use This Book</a></td><td>552</td></tr>
-<tr><td>05</td><td><a href="canvas_pages/05_the-ethics-beyond-boundaries-course-rhythm.html">The Ethics Beyond Boundaries Course Rhythm</a></td><td>238</td></tr>
-<tr><td>06</td><td><a href="canvas_pages/06_a-guide-to-prf-22-the-explainer-and-the-navigator.html">A Guide to PRF-22, the Explainer, and the Navigator</a></td><td>399</td></tr>
-<tr><td>07</td><td><a href="canvas_pages/07_privacy-choice-and-responsible-reflection.html">Privacy, Choice, and Responsible Reflection</a></td><td>267</td></tr>
-<tr><td>08</td><td><a href="canvas_pages/08_course-map-the-twelve-chapter-journey.html">Course Map: The Twelve Chapter Journey</a></td><td>336</td></tr>
-<tr><td>09</td><td><a href="canvas_pages/09_unit-1-seeing-responsibly.html">Unit 1 — Seeing Responsibly</a></td><td>654</td></tr>
-<tr><td>10</td><td><a href="canvas_pages/10_chapter-1.html">Chapter 1</a></td><td>3764</td></tr>
-<tr><td>11</td><td><a href="canvas_pages/11_chapter-2.html">Chapter 2</a></td><td>3498</td></tr>
-<tr><td>12</td><td><a href="canvas_pages/12_chapter-3.html">Chapter 3</a></td><td>3637</td></tr>
-<tr><td>13</td><td><a href="canvas_pages/13_unit-2-preserving-agency.html">Unit 2 — Preserving Agency</a></td><td>732</td></tr>
-<tr><td>14</td><td><a href="canvas_pages/14_chapter-4.html">Chapter 4</a></td><td>3474</td></tr>
-<tr><td>15</td><td><a href="canvas_pages/15_chapter-5.html">Chapter 5</a></td><td>3818</td></tr>
-<tr><td>16</td><td><a href="canvas_pages/16_chapter-6.html">Chapter 6</a></td><td>3456</td></tr>
-<tr><td>17</td><td><a href="canvas_pages/17_unit-3-acting-through-systems.html">Unit 3 — Acting Through Systems</a></td><td>612</td></tr>
-<tr><td>18</td><td><a href="canvas_pages/18_chapter-7.html">Chapter 7</a></td><td>3460</td></tr>
-<tr><td>19</td><td><a href="canvas_pages/19_chapter-8.html">Chapter 8</a></td><td>3577</td></tr>
-<tr><td>20</td><td><a href="canvas_pages/20_chapter-9.html">Chapter 9</a></td><td>3591</td></tr>
-<tr><td>21</td><td><a href="canvas_pages/21_unit-4-repairing-shared-worlds.html">Unit 4 — Repairing Shared Worlds</a></td><td>689</td></tr>
-<tr><td>22</td><td><a href="canvas_pages/22_chapter-10.html">Chapter 10</a></td><td>3305</td></tr>
-<tr><td>23</td><td><a href="canvas_pages/23_chapter-11.html">Chapter 11</a></td><td>3242</td></tr>
-<tr><td>24</td><td><a href="canvas_pages/24_chapter-12.html">Chapter 12</a></td><td>3633</td></tr>
-<tr><td>25</td><td><a href="canvas_pages/25_unit-4-closing-repairing-shared-worlds.html">Unit 4 Closing: Repairing Shared Worlds</a></td><td>207</td></tr>
-<tr><td>26</td><td><a href="canvas_pages/26_back-matter.html">Back Matter</a></td><td>2</td></tr>
-<tr><td>27</td><td><a href="canvas_pages/27_epilogue.html">Epilogue</a></td><td>701</td></tr>
-<tr><td>28</td><td><a href="canvas_pages/28_glossary.html">Glossary</a></td><td>1253</td></tr>
-<tr><td>29</td><td><a href="canvas_pages/29_tool-index.html">Tool Index</a></td><td>1250</td></tr>
-<tr><td>30</td><td><a href="canvas_pages/30_ethics-beyond-boundaries-integration-guide.html">Ethics Beyond Boundaries Integration Guide</a></td><td>635</td></tr>
-<tr><td>32</td><td><a href="canvas_pages/32_optional-instructor-implementation-notes.html">Optional Instructor Implementation Notes</a></td><td>233</td></tr>
-<tr><td>33</td><td><a href="canvas_pages/33_optional-historical-extension-case-map.html">Optional Historical Extension Case Map</a></td><td>372</td></tr>
-<tr><td>34</td><td><a href="canvas_pages/34_chapter-carry-forward-questions.html">Chapter Carry-Forward Questions</a></td><td>148</td></tr>
-<tr><td>35</td><td><a href="canvas_pages/35_personal-ethics-journal-reflection-question-archive.html">Personal Ethics Journal Reflection Question Archive</a></td><td>518</td></tr>
-<tr><td>36</td><td><a href="canvas_pages/36_final-student-portfolio-option.html">Final Student Portfolio Option</a></td><td>171</td></tr></tbody></table>
+  <main id="main">
+    <section class="card" id="arrive" data-required="privacy-ok">
+      <div class="section-kicker">1. Arrive</div>
+      <h2>Start with the chapter move</h2>
+      <p>In Chapter 2, you learned that good intentions do not automatically scale into good patterns. A group, classroom, workplace, or institution may have a written rule that sounds responsible while a different lived rule quietly trains people to act otherwise.</p>
+      <div class="callout">
+        <strong>Written rule:</strong> the official policy, instruction, or stated expectation.<br />
+        <strong>Lived rule:</strong> what people learn is actually rewarded, punished, expected, or ignored.<br />
+        <strong>Pattern repair:</strong> changing a rule, route, incentive, expectation, or practice so the same harmful pattern is less likely to repeat.
+      </div>
+      <div class="privacy">
+        <h3>Privacy and example choice</h3>
+        <p>You may use the provided case, a fictional example, a public example, a historical example, a composite example, or a low-stakes personal example. Do not disclose private, identifying, or sensitive information.</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="privacy-ok" data-required="true" />
+          <label for="privacy-ok">I understand that this workbook is for practicing the Chapter 2 skill, not for disclosing private personal information.</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="student-name">Optional name or class identifier</label>
+        <p class="hint">This is optional and is not required for progress.</p>
+        <input class="small-input" type="text" id="student-name" autocomplete="name" />
+      </div>
+    </section>
 
-<div class="canvas-note">Canvas note: This file uses semantic HTML only. You may paste the body content into a Canvas Page using the HTML editor.</div>
+    <section class="card" id="case" data-required="case-stands-out case-quick-miss">
+      <div class="section-kicker">2. Read the Case</div>
+      <h2>The Silent Safety Rule</h2>
+      <div class="case-box">
+        <p>A company handbook says that workers should report safety concerns immediately. The written rule is clear: if something looks unsafe, speak up.</p>
+        <p>But over time, workers learn a different lived rule. People who report problems are treated as troublemakers. Supervisors say they are “not team players.” Some workers lose good shifts after raising concerns. Others are ignored until they stop trying.</p>
+        <p>Eventually, most workers stay quiet unless a problem is impossible to hide. The official rule says “report concerns.” The lived rule says “keep quiet if you want to avoid trouble.”</p>
+      </div>
+      <div class="field">
+        <label for="case-stands-out">What stands out first in this case?</label>
+        <p class="hint">Start with what you notice before trying to solve the whole problem.</p>
+        <textarea id="case-stands-out" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="case-quick-miss">What might a quick judgment miss?</label>
+        <p class="hint">For example, a quick judgment might blame one worker without noticing the pattern that trained silence.</p>
+        <textarea id="case-quick-miss" data-required="true"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="rules" data-required="written-rule lived-rule teaches-lived repeated-result">
+      <div class="section-kicker">3. Written Rule vs Lived Rule</div>
+      <h2>Compare what is said with what is trained</h2>
+      <p>The written rule and the lived rule can point in opposite directions. This section asks you to name both.</p>
+      <div class="field">
+        <label for="written-rule">What is the written rule?</label>
+        <p class="hint">What does the official policy, handbook, instruction, or public statement say?</p>
+        <textarea id="written-rule" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="lived-rule">What is the lived rule?</label>
+        <p class="hint">What do people learn is actually rewarded, punished, expected, or ignored?</p>
+        <textarea id="lived-rule" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="teaches-lived">What teaches people the lived rule?</label>
+        <p class="hint">Look for incentives, fear, silence, informal punishment, modeling, or repeated experience.</p>
+        <textarea id="teaches-lived" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="repeated-result">What happens when people follow the lived rule repeatedly?</label>
+        <p class="hint">Name the larger result that begins to form.</p>
+        <textarea id="repeated-result" data-required="true"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="diagnosis" data-required="repeated-action pattern-name affected-people pattern-produced">
+      <div class="section-kicker">4. Pattern Diagnosis</div>
+      <h2>Use the Chapter 2 tool</h2>
+      <div class="tool-box">
+        <h3>Pattern Diagnosis</h3>
+        <ol>
+          <li>Identify the repeated action.</li>
+          <li>Identify the written rule.</li>
+          <li>Identify the lived rule.</li>
+          <li>Name the pattern.</li>
+          <li>Identify who is affected.</li>
+          <li>Locate the blockage.</li>
+          <li>Propose pattern repair.</li>
+        </ol>
+      </div>
+      <div class="example-box">
+        <h3>Concept reminder</h3>
+        <p>A simple rule followed locally by many people can create a larger pattern no one individually wanted. Detecting a pattern does not erase responsibility. It helps locate where responsibility and repair need to happen.</p>
+      </div>
+      <div class="field">
+        <label for="repeated-action">What repeated action keeps happening?</label>
+        <p class="hint">Example: workers stay quiet, concerns are delayed, managers dismiss warnings, students avoid asking for help.</p>
+        <textarea id="repeated-action" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="pattern-name">Name the larger pattern.</label>
+        <p class="hint">Give the pattern a short name, such as “silence around safety concerns” or “help-seeking gets punished.”</p>
+        <textarea id="pattern-name" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="affected-people">Who is affected by the pattern?</label>
+        <p class="hint">Include people who benefit, people who are burdened, people who are silenced, and people who inherit the risk.</p>
+        <textarea id="affected-people" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="pattern-produced">How is the pattern produced, and why is it more than one isolated bad choice?</label>
+        <p class="hint">Connect repeated actions, incentives, pressure, roles, expectations, or silence.</p>
+        <textarea id="pattern-produced" data-required="true"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="blockage" data-required="blockage-type blockage-explain">
+      <div class="section-kicker">5. Suppression Gap / Structural Obstruction</div>
+      <h2>Locate the blockage</h2>
+      <div class="grid-two">
+        <div class="callout">
+          <h3>Suppression gap</h3>
+          <p>A concern can be seen, but people are discouraged, punished, ignored, or made unsafe when they try to raise it.</p>
+        </div>
+        <div class="callout">
+          <h3>Structural obstruction</h3>
+          <p>A problem can be seen, but the system does not provide a working way to fix it.</p>
+        </div>
+      </div>
+      <div class="field">
+        <label for="blockage-type">Which blockage best fits this case?</label>
+        <select id="blockage-type" data-required="true">
+          <option value="">Choose one</option>
+          <option>Suppression gap</option>
+          <option>Structural obstruction</option>
+          <option>Both suppression gap and structural obstruction</option>
+          <option>Unsure / more information needed</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="blockage-explain">Explain your choice.</label>
+        <p class="hint">What makes this a suppression gap, a structural obstruction, both, or uncertain?</p>
+        <textarea id="blockage-explain" data-required="true"></textarea>
+      </div>
+      <details class="example-box">
+        <summary><strong>Optional comparison: Challenger warning route</strong></summary>
+        <p>A warning can fail when organizational roles, pressure, and burden-of-proof rules make it difficult for concern to travel into action. This does not mean no one is responsible. It means the warning route itself needs ethical attention.</p>
+      </details>
+    </section>
+
+    <section class="card" id="responsibility" data-required="responsibility-belongs repair-power cannot-conclude">
+      <div class="section-kicker">6. Responsibility and Limits</div>
+      <h2>Keep responsibility without oversimplifying</h2>
+      <div class="warn-box">
+        <strong>Important:</strong> Patterns shape action, but they do not make responsibility disappear. The question is where responsibility belongs and what kind of repair is possible.
+      </div>
+      <div class="field">
+        <label for="responsibility-belongs">Where does responsibility still belong?</label>
+        <p class="hint">Think about workers, supervisors, policies, leadership, processes, or the group as a whole.</p>
+        <textarea id="responsibility-belongs" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="repair-power">Who has power to repair part of the pattern?</label>
+        <p class="hint">Name roles or groups that could change incentives, routes, expectations, protection, or response.</p>
+        <textarea id="repair-power" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="cannot-conclude">What still cannot be concluded from the information available?</label>
+        <p class="hint">Name what you do not know yet. This protects against pretending the map is complete.</p>
+        <textarea id="cannot-conclude" data-required="true"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="repair" data-required="repair-change repair-silence small-improvement">
+      <div class="section-kicker">7. Pattern Repair</div>
+      <h2>Propose a repair route</h2>
+      <p>Chapter 2 repair does not only ask one person to “try harder.” It asks what route, rule, incentive, or expectation must change so the better action becomes easier and safer.</p>
+      <div class="field">
+        <label for="repair-change">What written rule, lived rule, incentive, expectation, or route should change?</label>
+        <textarea id="repair-change" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="repair-silence">What repair step could make silence less likely?</label>
+        <p class="hint">For example: protected reporting, visible follow-up, no-retaliation enforcement, shared review, or a safer warning route.</p>
+        <textarea id="repair-silence" data-required="true"></textarea>
+      </div>
+      <div class="field">
+        <label for="small-improvement">What would count as a small but real improvement?</label>
+        <p class="hint">Name a realistic first repair step, not a perfect solution.</p>
+        <textarea id="small-improvement" data-required="true"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="output" data-required="">
+      <div class="section-kicker">8. Output Card</div>
+      <h2>Chapter 2 Workbook Output Card</h2>
+      <p>The Output Card summarizes your work. Your instructor may ask you to submit it, paste it into Canvas, or use it for follow-up reflection.</p>
+      <div class="button-row">
+        <button type="button" id="generate-output">Generate / refresh Output Card</button>
+        <button type="button" class="secondary" id="copy-output">Copy Output Card</button>
+        <button type="button" class="secondary" id="download-output">Download Output Card</button>
+      </div>
+      <div class="output-box">
+        <pre id="output-card" class="output-card-text" aria-live="polite">Generate your Output Card when you are ready.</pre>
+      </div>
+    </section>
+
+    <section class="card" id="complete" data-required="">
+      <div class="section-kicker">9. Complete</div>
+      <h2>Finish the workbook</h2>
+      <p>You have practiced detecting a pattern, distinguishing written rules from lived rules, naming a blockage, and proposing a repair route.</p>
+      <div class="callout">
+        <strong>Carry this question forward:</strong> What pattern is being produced, and what repair route could make responsible action easier?
+      </div>
+      <button type="button" id="mark-complete">Mark workbook complete</button>
+      <div id="completion-message" class="completion-message" role="status">
+        <strong>Workbook complete.</strong> Save, copy, or download your Output Card if your instructor asks for it.
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Chapter 2 Workbook v1.0 — Pattern and Lived Rule Workbook.</strong> Classroom portable version. Local-only: your typed responses stay in this browser unless you copy, download, or submit them.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'ebb_app_ch2_v1_pattern_lived_rule_classroom';
+  const requiredControls = Array.from(document.querySelectorAll('[data-required="true"]'));
+  const allControls = Array.from(document.querySelectorAll('textarea, input[type="text"], input[type="checkbox"], select'));
+  const progressFill = document.getElementById('progress-fill');
+  const progressText = document.getElementById('progress-text');
+  const progressLinks = Array.from(document.querySelectorAll('#progress-list a'));
+  const output = document.getElementById('output-card');
+
+  function valueOf(id) {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    if (el.type === 'checkbox') return el.checked ? 'Yes' : 'No';
+    return (el.value || '').trim();
+  }
+
+  function isComplete(el) {
+    if (el.type === 'checkbox') return el.checked;
+    return (el.value || '').trim().length > 0;
+  }
+
+  function sectionIsComplete(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return false;
+    const ids = (section.getAttribute('data-required') || '').split(/\s+/).filter(Boolean);
+    if (!ids.length) {
+      if (sectionId === 'output') return output.textContent && !output.textContent.includes('Generate your Output Card');
+      if (sectionId === 'complete') return document.getElementById('completion-message').classList.contains('show');
+      return true;
+    }
+    return ids.every(id => {
+      const el = document.getElementById(id);
+      return el ? isComplete(el) : false;
+    });
+  }
+
+  function updateProgress() {
+    const completeCount = requiredControls.filter(isComplete).length;
+    const percent = requiredControls.length ? Math.round((completeCount / requiredControls.length) * 100) : 0;
+    progressFill.style.width = percent + '%';
+    progressText.textContent = percent + '% complete (' + completeCount + ' of ' + requiredControls.length + ' required responses)';
+    progressLinks.forEach(link => {
+      const done = sectionIsComplete(link.dataset.section);
+      link.classList.toggle('done', done);
+      link.setAttribute('aria-label', link.textContent.trim() + (done ? ' complete' : ' incomplete'));
+    });
+  }
+
+  function collectState() {
+    const state = {};
+    allControls.forEach(el => {
+      if (el.type === 'checkbox') state[el.id] = el.checked;
+      else state[el.id] = el.value;
+    });
+    state.output = output.textContent;
+    state.complete = document.getElementById('completion-message').classList.contains('show');
+    return state;
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+    updateProgress();
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      allControls.forEach(el => {
+        if (!(el.id in state)) return;
+        if (el.type === 'checkbox') el.checked = Boolean(state[el.id]);
+        else el.value = state[el.id];
+      });
+      if (state.output) output.textContent = state.output;
+      if (state.complete) document.getElementById('completion-message').classList.add('show');
+    } catch (err) {
+      console.warn('Could not load saved workbook state.', err);
+    }
+    updateProgress();
+  }
+
+  function buildOutputCard() {
+    const name = valueOf('student-name') || 'Not provided';
+    return [
+      'Chapter 2 Workbook Output Card — Pattern and Lived Rule',
+      'Classroom Version 1.0',
+      '',
+      'Name / identifier: ' + name,
+      '',
+      '1. First noticing:',
+      valueOf('case-stands-out') || '[not completed]',
+      '',
+      '2. What a quick judgment might miss:',
+      valueOf('case-quick-miss') || '[not completed]',
+      '',
+      '3. Written rule:',
+      valueOf('written-rule') || '[not completed]',
+      '',
+      '4. Lived rule:',
+      valueOf('lived-rule') || '[not completed]',
+      '',
+      '5. What teaches the lived rule:',
+      valueOf('teaches-lived') || '[not completed]',
+      '',
+      '6. Result when the lived rule is repeated:',
+      valueOf('repeated-result') || '[not completed]',
+      '',
+      '7. Repeated action:',
+      valueOf('repeated-action') || '[not completed]',
+      '',
+      '8. Larger pattern:',
+      valueOf('pattern-name') || '[not completed]',
+      '',
+      '9. People affected:',
+      valueOf('affected-people') || '[not completed]',
+      '',
+      '10. How the pattern is produced / why it is more than one isolated choice:',
+      valueOf('pattern-produced') || '[not completed]',
+      '',
+      '11. Blockage finding:',
+      valueOf('blockage-type') || '[not completed]',
+      '',
+      '12. Blockage explanation:',
+      valueOf('blockage-explain') || '[not completed]',
+      '',
+      '13. Where responsibility still belongs:',
+      valueOf('responsibility-belongs') || '[not completed]',
+      '',
+      '14. Who has repair power:',
+      valueOf('repair-power') || '[not completed]',
+      '',
+      '15. What still cannot be concluded:',
+      valueOf('cannot-conclude') || '[not completed]',
+      '',
+      '16. What should change:',
+      valueOf('repair-change') || '[not completed]',
+      '',
+      '17. Repair step that could make silence less likely:',
+      valueOf('repair-silence') || '[not completed]',
+      '',
+      '18. Small but real improvement:',
+      valueOf('small-improvement') || '[not completed]',
+      '',
+      'Carry-forward question: What pattern is being produced, and what repair route could make responsible action easier?'
+    ].join('\n');
+  }
+
+  function downloadText(filename, text) {
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function worksheetText() {
+    return [
+      'Chapter 2 Workbook v1.0 — Pattern and Lived Rule Workbook',
+      'Classroom worksheet version',
+      '',
+      'Privacy reminder: You may use the provided case, a fictional example, a public example, a historical example, a composite example, or a low-stakes personal example. Do not disclose private, identifying, or sensitive information.',
+      '',
+      'Case: The Silent Safety Rule',
+      'A company handbook says workers should report safety concerns immediately. But workers learn that people who report problems are treated as troublemakers, lose good shifts, or are ignored. The written rule says report concerns. The lived rule says keep quiet if you want to avoid trouble.',
+      '',
+      '1. What stands out first?',
+      '',
+      '2. What might a quick judgment miss?',
+      '',
+      '3. What is the written rule?',
+      '',
+      '4. What is the lived rule?',
+      '',
+      '5. What teaches people the lived rule?',
+      '',
+      '6. What happens when people follow the lived rule repeatedly?',
+      '',
+      '7. What repeated action keeps happening?',
+      '',
+      '8. Name the larger pattern.',
+      '',
+      '9. Who is affected by the pattern?',
+      '',
+      '10. How is the pattern produced, and why is it more than one isolated bad choice?',
+      '',
+      '11. Which blockage best fits: suppression gap, structural obstruction, both, or unsure?',
+      '',
+      '12. Explain your blockage choice.',
+      '',
+      '13. Where does responsibility still belong?',
+      '',
+      '14. Who has power to repair part of the pattern?',
+      '',
+      '15. What still cannot be concluded?',
+      '',
+      '16. What written rule, lived rule, incentive, expectation, or route should change?',
+      '',
+      '17. What repair step could make silence less likely?',
+      '',
+      '18. What would count as a small but real improvement?',
+      ''
+    ].join('\n');
+  }
+
+  document.addEventListener('input', function (event) {
+    if (allControls.includes(event.target)) saveState();
+  });
+  document.addEventListener('change', function (event) {
+    if (allControls.includes(event.target)) saveState();
+  });
+
+  document.getElementById('save-progress').addEventListener('click', function () {
+    saveState();
+    alert('Progress saved in this browser.');
+  });
+  document.getElementById('reset-workbook').addEventListener('click', function () {
+    if (!confirm('Reset this workbook and clear saved responses in this browser?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    allControls.forEach(el => {
+      if (el.type === 'checkbox') el.checked = false;
+      else el.value = '';
+    });
+    output.textContent = 'Generate your Output Card when you are ready.';
+    document.getElementById('completion-message').classList.remove('show');
+    updateProgress();
+  });
+  document.getElementById('generate-output').addEventListener('click', function () {
+    output.textContent = buildOutputCard();
+    saveState();
+  });
+  document.getElementById('copy-output').addEventListener('click', async function () {
+    if (output.textContent.includes('Generate your Output Card')) output.textContent = buildOutputCard();
+    try {
+      await navigator.clipboard.writeText(output.textContent);
+      alert('Output Card copied.');
+    } catch (err) {
+      alert('Copy did not work in this browser. You can select the Output Card text and copy it manually.');
+    }
+    saveState();
+  });
+  document.getElementById('download-output').addEventListener('click', function () {
+    if (output.textContent.includes('Generate your Output Card')) output.textContent = buildOutputCard();
+    downloadText('chapter_2_pattern_lived_rule_output_card.txt', output.textContent);
+    saveState();
+  });
+  document.getElementById('download-worksheet').addEventListener('click', function () {
+    downloadText('chapter_2_pattern_lived_rule_worksheet.txt', worksheetText());
+  });
+  document.getElementById('mark-complete').addEventListener('click', function () {
+    if (output.textContent.includes('Generate your Output Card')) output.textContent = buildOutputCard();
+    document.getElementById('completion-message').classList.add('show');
+    saveState();
+  });
+
+  loadState();
+})();
+</script>
 </body>
 </html>
